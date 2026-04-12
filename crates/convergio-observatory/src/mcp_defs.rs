@@ -14,10 +14,13 @@ pub fn observatory_tools() -> Vec<McpToolDef> {
             input_schema: json!({
                 "type": "object",
                 "properties": {
-                    "limit": {"type": "integer", "description": "Max events to return (default 20)"},
+                    "limit": {"type": "integer", "description": "Max events to return (default 20, max 500)"},
                     "org_id": {"type": "string", "description": "Filter by organization"},
+                    "source": {"type": "string", "description": "Filter by event source"},
                     "event_type": {"type": "string", "description": "Filter by event type"},
-                    "since": {"type": "string", "description": "ISO timestamp lower bound"}
+                    "node_id": {"type": "string", "description": "Filter by node ID"},
+                    "since": {"type": "string", "description": "ISO timestamp lower bound"},
+                    "until": {"type": "string", "description": "ISO timestamp upper bound"}
                 }
             }),
             min_ring: "community".into(),
@@ -31,8 +34,10 @@ pub fn observatory_tools() -> Vec<McpToolDef> {
             input_schema: json!({
                 "type": "object",
                 "properties": {
-                    "query": {"type": "string", "description": "Search query"}
-                }
+                    "q": {"type": "string", "description": "Search query (FTS5)"},
+                    "limit": {"type": "integer", "description": "Max results (default 50, max 200)"}
+                },
+                "required": ["q"]
             }),
             min_ring: "community".into(),
             path_params: vec![],
@@ -97,8 +102,8 @@ pub fn observatory_tools() -> Vec<McpToolDef> {
             input_schema: json!({
                 "type": "object",
                 "properties": {
-                    "url": {"type": "string"},
-                    "events": {"type": "array", "items": {"type": "string"}}
+                    "url": {"type": "string", "description": "Webhook URL (HTTPS required)"},
+                    "event_filter": {"type": "string", "description": "Event filter glob (default '*')"}
                 },
                 "required": ["url"]
             }),

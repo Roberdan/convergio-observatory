@@ -7,6 +7,21 @@ use rusqlite::{params, Connection};
 
 use crate::types::SearchResult;
 
+/// Sanitize a user-provided string for safe use in FTS5 MATCH queries.
+///
+/// Wraps each whitespace-delimited token in double-quotes so that FTS5
+/// operators (`AND`, `OR`, `NOT`, `NEAR`, `*`, `-`, `^`, `(`, `)`, `:`)
+/// are treated as literal text, preventing query syntax injection.
+pub fn sanitize_fts_query(raw: &str) -> String {
+    raw.split_whitespace()
+        .map(|token| {
+            let escaped = token.replace('"', "\"\"");
+            format!("\"{escaped}\"")
+        })
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
 /// Index a piece of content for full-text search.
 pub fn index_content(
     conn: &Connection,
@@ -123,7 +138,28 @@ mod tests {
             )
             .unwrap();
         }
-        let results = search(&conn, "deploy", 3).unwrap();
+        let results = search(&conn, "\"deploy\"", 3).unwrap();
         assert_eq!(results.len(), 3);
+    }
+
+    #[test]
+    fn sanitize_fts_strips_operators() {
+        // FTS5 operators like NOT, OR, AND, *, NEAR should be quoted
+        let sanitized = sanitize_fts_query("hello OR world NOT secret");
+        assert_eq!(sanitized, r#""hello" "OR" "world" "NOT" "secret""#);
+    }
+
+    #[test]
+    fn sanitize_fts_empty() {
+        assert_eq!(sanitize_fts_query(""), "");
+        assert_eq!(sanitize_fts_query("  "), "");
+    }
+
+    #[test]
+    fn sanitize_fts_handles_quotes() {
+        // Input `hello "world"` splits to tokens: `hello`, `"world"`
+        // Token `"world"` → escape quotes → `""world""` → wrap → `"""world"""`
+        let sanitized = sanitize_fts_query(r#"hello "world""#);
+        assert_eq!(sanitized, "\"hello\" \"\"\"world\"\"\"");
     }
 }
