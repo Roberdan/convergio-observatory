@@ -38,6 +38,9 @@ pub(crate) async fn handle_register_webhook(
     State(state): State<Arc<ObservatoryState>>,
     Json(body): Json<WebhookRequest>,
 ) -> Json<serde_json::Value> {
+    if body.url.len() > 2048 {
+        return Json(super::routes::err_json("VALIDATION", "URL too long"));
+    }
     let conn = match state.pool.get() {
         Ok(c) => c,
         Err(e) => return Json(super::routes::err_json("POOL_ERROR", &e.to_string())),
@@ -45,7 +48,7 @@ pub(crate) async fn handle_register_webhook(
     let filter = body.event_filter.as_deref().unwrap_or("*");
     match export::register_webhook(&conn, &body.url, filter) {
         Ok(id) => Json(serde_json::json!({ "ok": true, "id": id })),
-        Err(e) => Json(super::routes::err_json("DB_ERROR", &e.to_string())),
+        Err(e) => Json(super::routes::err_json("VALIDATION", &e)),
     }
 }
 

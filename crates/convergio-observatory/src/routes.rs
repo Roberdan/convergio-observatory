@@ -25,6 +25,19 @@ use crate::routes_webhook::{
 use crate::timeline::TimelineFilter;
 use crate::{anomaly, dashboard, search, timeline};
 
+/// Maximum allowed length for any single query-string parameter value.
+const MAX_PARAM_LEN: usize = 512;
+
+/// Return `Some(error_json)` if any value exceeds [`MAX_PARAM_LEN`].
+fn validate_len(values: &[Option<&String>]) -> Option<serde_json::Value> {
+    for v in values.iter().flatten() {
+        if v.len() > MAX_PARAM_LEN {
+            return Some(err_json("VALIDATION", "parameter too long"));
+        }
+    }
+    None
+}
+
 /// Shared state for observatory routes.
 pub struct ObservatoryState {
     pub pool: ConnPool,
@@ -68,6 +81,16 @@ async fn handle_timeline(
     State(state): State<Arc<ObservatoryState>>,
     Query(q): Query<TimelineQuery>,
 ) -> Json<serde_json::Value> {
+    if let Some(e) = validate_len(&[
+        q.org_id.as_ref(),
+        q.source.as_ref(),
+        q.event_type.as_ref(),
+        q.node_id.as_ref(),
+        q.since.as_ref(),
+        q.until.as_ref(),
+    ]) {
+        return Json(e);
+    }
     let conn = match state.pool.get() {
         Ok(c) => c,
         Err(e) => return Json(err_json("POOL_ERROR", &e.to_string())),
@@ -97,11 +120,15 @@ async fn handle_search(
     State(state): State<Arc<ObservatoryState>>,
     Query(q): Query<SearchQuery>,
 ) -> Json<serde_json::Value> {
+    if q.q.len() > MAX_PARAM_LEN || q.q.is_empty() {
+        return Json(err_json("VALIDATION", "invalid search query length"));
+    }
     let conn = match state.pool.get() {
         Ok(c) => c,
         Err(e) => return Json(err_json("POOL_ERROR", &e.to_string())),
     };
-    match search::search(&conn, &q.q, q.limit.unwrap_or(50)) {
+    let sanitized = search::sanitize_fts_query(&q.q);
+    match search::search(&conn, &sanitized, q.limit.unwrap_or(50)) {
         Ok(results) => Json(serde_json::json!({ "ok": true, "results": results })),
         Err(e) => Json(err_json("SEARCH_ERROR", &e.to_string())),
     }
@@ -118,6 +145,9 @@ async fn handle_dashboard(
     State(state): State<Arc<ObservatoryState>>,
     Query(q): Query<DashboardQuery>,
 ) -> Json<serde_json::Value> {
+    if let Some(e) = validate_len(&[q.org_id.as_ref(), q.since.as_ref(), q.until.as_ref()]) {
+        return Json(e);
+    }
     let conn = match state.pool.get() {
         Ok(c) => c,
         Err(e) => return Json(err_json("POOL_ERROR", &e.to_string())),
@@ -185,8 +215,21 @@ async fn handle_resolve(
     }
 }
 
-pub(crate) fn err_json(code: &str, message: &str) -> serde_json::Value {
+/// Build an error JSON response. Internal details are logged but never
+/// exposed to the caller — only the error `code` is returned.
+pub(crate) fn err_json(code: &str, internal_message: &str) -> serde_json::Value {
+    tracing::warn!(code, internal_message, "observatory API error");
     serde_json::json!({
-        "error": { "code": code, "message": message }
+        "error": { "code": code, "message": public_error_message(code) }
     })
+}
+
+fn public_error_message(code: &str) -> &'static str {
+    match code {
+        "POOL_ERROR" => "Service temporarily unavailable",
+        "NOT_FOUND" => "Resource not found",
+        "QUERY_ERROR" | "SEARCH_ERROR" | "DB_ERROR" => "Internal error",
+        "VALIDATION" => "Invalid input",
+        _ => "Unknown error",
+    }
 }

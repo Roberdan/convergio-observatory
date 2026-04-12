@@ -43,7 +43,7 @@ graph LR
 
 ```toml
 [dependencies]
-convergio-observatory = { git = "https://github.com/Roberdan/convergio-observatory", tag = "v0.1.0" }
+convergio-observatory = { git = "https://github.com/Roberdan/convergio-observatory", tag = "v0.1.1" }
 ```
 
 ## Development
@@ -54,6 +54,16 @@ RUSTFLAGS="-Dwarnings" cargo clippy --workspace --all-targets --locked
 cargo test --workspace --locked
 cargo deny check
 ```
+
+## Security
+
+- **Webhook URLs**: HTTPS required, private IP ranges blocked (SSRF prevention)
+- **Error responses**: Internal details logged, not exposed to callers
+- **Search input**: FTS5 operators neutralized via token quoting
+- **Prometheus export**: Label values escaped per exposition format spec
+- **Input validation**: All query parameters length-capped
+
+See [ADR-002](docs/adr/002-audit-security-fixes.md) for full audit details.
 
 ## Related
 
