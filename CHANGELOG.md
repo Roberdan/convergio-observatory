@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/Roberdan/convergio-observatory/compare/convergio-observatory-v0.1.1...convergio-observatory-v0.1.2) (2026-04-12)
+
+
+### Documentation
+
+* copy ADR from monorepo ([3670127](https://github.com/Roberdan/convergio-observatory/commit/3670127c43ddede835a38c37ac256bfa47cb2fb4))
+
 ## [0.1.1](https://github.com/Roberdan/convergio-observatory/compare/convergio-observatory-v0.1.0...convergio-observatory-v0.1.1) (2026-04-12)
 
 
