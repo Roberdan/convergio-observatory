@@ -4,6 +4,7 @@ description = "Observability — metrics collection, distributed tracing, alerti
 version = "0.1.5"
 edition.workspace = true
 license.workspace = true
+repository = "https://github.com/Roberdan/convergio-observatory"
 
 [dependencies]
 convergio-types = { workspace = true }
