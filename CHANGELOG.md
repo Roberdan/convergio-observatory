@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/Roberdan/convergio-observatory/compare/v0.1.3...v0.1.4) (2026-04-13)
+
+
+### Bug Fixes
+
+* **deps:** update convergio-ipc to v0.1.6 (SDK v0.1.9 aligned) ([3f6ec8b](https://github.com/Roberdan/convergio-observatory/commit/3f6ec8b7848520e1f34521934f75a2cc41c2e102))
+
 ## [0.1.3](https://github.com/Roberdan/convergio-observatory/compare/v0.1.2...v0.1.3) (2026-04-13)
 
 
