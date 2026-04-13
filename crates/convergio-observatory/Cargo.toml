@@ -1,7 +1,7 @@
 [package]
 name = "convergio-observatory"
 description = "Observability — metrics collection, distributed tracing, alerting"
-version = "0.1.3"
+version = "0.1.4"
 edition.workspace = true
 license.workspace = true
 
