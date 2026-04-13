@@ -335,7 +335,7 @@ dependencies = [
 
 [[package]]
 name = "convergio-observatory"
-version = "0.1.6"
+version = "0.1.7"
 dependencies = [
  "axum",
  "chrono",
