@@ -279,24 +279,11 @@ dependencies = [
 
 [[package]]
 name = "convergio-db"
-version = "0.1.2"
-source = "git+https://github.com/Roberdan/convergio-db?tag=convergio-db-v0.1.2#6f92816037f66d131ea6b7ad8808a1aaabfe4319"
-dependencies = [
- "axum",
- "convergio-types 0.1.7",
- "r2d2",
- "r2d2_sqlite",
- "rusqlite",
- "tracing",
-]
-
-[[package]]
-name = "convergio-db"
 version = "0.1.9"
 source = "git+https://github.com/Roberdan/convergio-sdk?tag=v0.1.9#ccbc95bb56a3a8e78fb713214f3f8b8ea9341f5a"
 dependencies = [
  "chrono",
- "convergio-types 0.1.9",
+ "convergio-types",
  "r2d2",
  "r2d2_sqlite",
  "rusqlite",
@@ -307,15 +294,15 @@ dependencies = [
 
 [[package]]
 name = "convergio-ipc"
-version = "0.1.3"
-source = "git+https://github.com/Roberdan/convergio-ipc?tag=convergio-ipc-v0.1.3#8050c1bbf8b9e974f652107ae21d4b27460f1bff"
+version = "0.1.6"
+source = "git+https://github.com/Roberdan/convergio-ipc?tag=v0.1.6#25a99c3aa1daa21a8853d9127a9aaca9a53729ba"
 dependencies = [
  "async-stream",
  "axum",
  "chrono",
- "convergio-db 0.1.2",
+ "convergio-db",
  "convergio-telemetry",
- "convergio-types 0.1.9",
+ "convergio-types",
  "futures-core",
  "libc",
  "r2d2",
@@ -335,10 +322,10 @@ version = "0.1.3"
 dependencies = [
  "axum",
  "chrono",
- "convergio-db 0.1.9",
+ "convergio-db",
  "convergio-ipc",
  "convergio-telemetry",
- "convergio-types 0.1.9",
+ "convergio-types",
  "rusqlite",
  "serde",
  "serde_json",
@@ -352,25 +339,12 @@ name = "convergio-telemetry"
 version = "0.1.9"
 source = "git+https://github.com/Roberdan/convergio-sdk?tag=v0.1.9#ccbc95bb56a3a8e78fb713214f3f8b8ea9341f5a"
 dependencies = [
- "convergio-types 0.1.9",
+ "convergio-types",
  "serde",
  "serde_json",
  "tracing",
  "tracing-appender",
  "tracing-subscriber",
-]
-
-[[package]]
-name = "convergio-types"
-version = "0.1.7"
-source = "git+https://github.com/Roberdan/convergio-sdk?tag=v0.1.7#8d9c143cd5a6c16be5eb274cc09b2540307b620a"
-dependencies = [
- "axum",
- "chrono",
- "dirs",
- "serde",
- "serde_json",
- "thiserror 1.0.69",
 ]
 
 [[package]]
@@ -1611,9 +1585,9 @@ checksum = "94300abf3f1ae2e2b8ffb7b58043de3d399c73fa6f4b73826402a5c457614dbe"
 
 [[package]]
 name = "rustls"
-version = "0.23.37"
+version = "0.23.38"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "758025cb5fccfd3bc2fd74708fd4682be41d99e5dff73c377c0646c6012c73a4"
+checksum = "69f9466fb2c14ea04357e91413efb882e2a6d4a406e625449bc0a5d360d53a21"
 dependencies = [
  "aws-lc-rs",
  "once_cell",
