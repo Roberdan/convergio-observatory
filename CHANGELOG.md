@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.1.3](https://github.com/Roberdan/convergio-observatory/compare/v0.1.2...v0.1.3) (2026-04-13)
+
+
+### Features
+
+* adapt convergio-observatory for standalone repo ([affa8c2](https://github.com/Roberdan/convergio-observatory/commit/affa8c2eeaea898a44e63cbcd4257fa13bac49ac))
+
+
+### Bug Fixes
+
+* **release:** use vX.Y.Z tag format (remove component) ([88581f7](https://github.com/Roberdan/convergio-observatory/commit/88581f72b59d73a58e07235acfa612980c1b968b))
+* security audit — SSRF, info leak, prometheus injection, FTS5 injection ([#2](https://github.com/Roberdan/convergio-observatory/issues/2)) ([9f6e3aa](https://github.com/Roberdan/convergio-observatory/commit/9f6e3aa7e63a406d84fbeb1f4674a309909e8b8b))
+
+
+### Documentation
+
+* copy ADR from monorepo ([3670127](https://github.com/Roberdan/convergio-observatory/commit/3670127c43ddede835a38c37ac256bfa47cb2fb4))
+
 ## [0.1.2](https://github.com/Roberdan/convergio-observatory/compare/convergio-observatory-v0.1.1...convergio-observatory-v0.1.2) (2026-04-12)
 
 
