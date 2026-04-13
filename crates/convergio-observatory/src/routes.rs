@@ -154,13 +154,17 @@ async fn handle_dashboard(
     };
     let since = q.since.as_deref().unwrap_or("2020-01-01");
     let until = q.until.as_deref().unwrap_or("2099-12-31");
-    let costs = q
-        .org_id
-        .as_deref()
-        .map(|oid| dashboard::cost_per_hour(&conn, oid, since, until).unwrap_or_default());
-    let throughput =
-        dashboard::task_throughput(&conn, q.org_id.as_deref(), since, until).unwrap_or_default();
-    let latency = dashboard::model_latency(&conn).unwrap_or_default();
+    let costs = q.org_id.as_deref().map(|oid| {
+        dashboard::cost_per_hour(&conn, oid, since, until)
+            .inspect_err(|e| tracing::warn!("dashboard cost_per_hour: {e}"))
+            .unwrap_or_default()
+    });
+    let throughput = dashboard::task_throughput(&conn, q.org_id.as_deref(), since, until)
+        .inspect_err(|e| tracing::warn!("dashboard task_throughput: {e}"))
+        .unwrap_or_default();
+    let latency = dashboard::model_latency(&conn)
+        .inspect_err(|e| tracing::warn!("dashboard model_latency: {e}"))
+        .unwrap_or_default();
     Json(serde_json::json!({
         "ok": true,
         "cost_per_hour": costs,

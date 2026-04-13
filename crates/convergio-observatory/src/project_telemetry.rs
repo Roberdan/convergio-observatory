@@ -42,9 +42,7 @@ async fn handle_project_summary(
     let conn = match state.pool.get() {
         Ok(c) => c,
         Err(e) => {
-            return Json(json!({
-                "error": {"code": "POOL_ERROR", "message": e.to_string()}
-            }));
+            return Json(crate::routes::err_json("POOL_ERROR", &e.to_string()));
         }
     };
 
@@ -71,6 +69,7 @@ pub fn build_project_summary(conn: &rusqlite::Connection, project_id: &str) -> P
             [project_id],
             |r| r.get(0),
         )
+        .inspect_err(|e| tracing::warn!("project summary event_count: {e}"))
         .unwrap_or(0);
 
     // Agent-related events
@@ -82,6 +81,7 @@ pub fn build_project_summary(conn: &rusqlite::Connection, project_id: &str) -> P
             [project_id],
             |r| r.get(0),
         )
+        .inspect_err(|e| tracing::warn!("project summary agent_events: {e}"))
         .unwrap_or(0);
 
     // Error events
@@ -93,6 +93,7 @@ pub fn build_project_summary(conn: &rusqlite::Connection, project_id: &str) -> P
             [project_id],
             |r| r.get(0),
         )
+        .inspect_err(|e| tracing::warn!("project summary error_events: {e}"))
         .unwrap_or(0);
 
     // Unresolved anomalies for this project
@@ -103,6 +104,7 @@ pub fn build_project_summary(conn: &rusqlite::Connection, project_id: &str) -> P
             [project_id],
             |r| r.get(0),
         )
+        .inspect_err(|e| tracing::warn!("project summary anomaly_count: {e}"))
         .unwrap_or(0);
 
     // Latest event timestamp
@@ -113,6 +115,7 @@ pub fn build_project_summary(conn: &rusqlite::Connection, project_id: &str) -> P
             [project_id],
             |r| r.get(0),
         )
+        .inspect_err(|e| tracing::warn!("project summary latest_event_at: {e}"))
         .ok();
 
     summary
