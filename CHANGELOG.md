@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.5](https://github.com/Roberdan/convergio-observatory/compare/v0.1.4...v0.1.5) (2026-04-13)
+
+
+### Bug Fixes
+
+* fix malformed convergio-ipc dependency in Cargo.toml ([#8](https://github.com/Roberdan/convergio-observatory/issues/8)) ([10999c0](https://github.com/Roberdan/convergio-observatory/commit/10999c0d4c2a7ff7b3c498a64d9a72418dccf5bc))
+
 ## [0.1.4](https://github.com/Roberdan/convergio-observatory/compare/v0.1.3...v0.1.4) (2026-04-13)
 
 
