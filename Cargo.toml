@@ -3,17 +3,16 @@ resolver = "2"
 members = ["crates/convergio-observatory"]
 
 [workspace.package]
-version = "0.1.7"
+version = "0.1.8"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/Roberdan/convergio-observatory"
 
 [workspace.dependencies]
 # SDK dependencies
-convergio-sdk = { git = "https://github.com/Roberdan/convergio-sdk", tag = "v0.1.9", version = "0.1" }
-convergio-types = { git = "https://github.com/Roberdan/convergio-sdk", tag = "v0.1.9", version = "0.1" }
-convergio-db = { git = "https://github.com/Roberdan/convergio-sdk", tag = "v0.1.9", version = "0.1" }
-convergio-telemetry = { git = "https://github.com/Roberdan/convergio-sdk", tag = "v0.1.9", version = "0.1" }
+convergio-types = "0.1"
+convergio-db = "0.1"
+convergio-telemetry = "0.1"
 convergio-ipc = "0.1"
 
 # Common deps — pin same versions as SDK for compatibility
