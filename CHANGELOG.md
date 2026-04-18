@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.8](https://github.com/Roberdan/convergio-observatory/compare/v0.1.7...v0.1.8) (2026-04-18)
+
+
+### Bug Fixes
+
+* **deps:** bump rustls-webpki 0.103.11 -&gt; 0.103.12 (RUSTSEC-2026-0099) ([552d90a](https://github.com/Roberdan/convergio-observatory/commit/552d90a1b7ebdb2fea87dcc93b5c38c881f2a332))
+* security and quality audit pass 2 ([3841ebb](https://github.com/Roberdan/convergio-observatory/commit/3841ebb5b0eecadded3a816e96735f18941854d2))
+* SSRF bypass via userinfo, info leak, error swallowing ([7bb7302](https://github.com/Roberdan/convergio-observatory/commit/7bb73024675da280c6e6391d680bf4c2e974a06b))
+
 ## [0.1.7](https://github.com/Roberdan/convergio-observatory/compare/v0.1.6...v0.1.7) (2026-04-13)
 
 
