@@ -155,17 +155,15 @@ fn validate_webhook_url(url: &str) -> Result<(), String> {
         return Err("webhook URL must use HTTPS".into());
     }
 
-    // Reject URLs that look like they target private networks
-    let host_part = url
-        .split("://")
-        .nth(1)
-        .unwrap_or("")
-        .split('/')
-        .next()
-        .unwrap_or("")
-        .split(':')
-        .next()
-        .unwrap_or("");
+    // Extract host, stripping userinfo (user:pass@) to prevent SSRF bypass
+    let after_scheme = url.split("://").nth(1).unwrap_or("");
+    let authority = after_scheme.split('/').next().unwrap_or("");
+    let host_and_port = if let Some(at_pos) = authority.rfind('@') {
+        &authority[at_pos + 1..]
+    } else {
+        authority
+    };
+    let host_part = host_and_port.split(':').next().unwrap_or("");
 
     let blocked_prefixes = [
         "10.",
@@ -295,6 +293,16 @@ mod tests {
         let conn = setup_db();
         let result = register_webhook(&conn, "http://localhost:8080/hook", "*");
         assert!(result.is_ok());
+    }
+
+    #[test]
+    fn register_webhook_rejects_ssrf_via_userinfo() {
+        let conn = setup_db();
+        // Attacker tries to bypass host check with userinfo
+        let result = register_webhook(&conn, "https://evil.com@10.0.0.1/hook", "*");
+        assert!(result.is_err());
+        let result = register_webhook(&conn, "https://user:pass@192.168.1.1/hook", "*");
+        assert!(result.is_err());
     }
 
     #[test]
